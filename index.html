@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>PulseFi AI Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar glass" id="onboarding">
+        <div class="brand">
+          <div class="logo">⚡</div>
+          <div>
+            <h1>PulseFi</h1>
+            <p>Open-Source AI Finance</p>
+          </div>
+          <button id="logoutBtn" class="secondary small-btn" type="button">Logout</button>
+        </div>
+
+        <section class="auth-card card">
+          <h2>Secure Onboarding</h2>
+          <div class="auth-actions">
+            <button class="primary" type="button">Sign Up</button>
+            <button class="secondary" type="button">Login</button>
+          </div>
+          <button class="google-btn" type="button">Continue with Google</button>
+          <label class="switch-row">
+            <span>Enable biometrics</span>
+            <input id="biometricToggle" type="checkbox" checked />
+          </label>
+          <div class="auth-actions">
+            <button id="biometricBtn" class="secondary" type="button">Verify Biometrics</button>
+            <button id="notifyBtn" class="secondary" type="button">Enable Notifications</button>
+          </div>
+          <p id="authStatus" class="hint">Biometrics + phone notifications ready to configure.</p>
+        </section>
+
+        <section class="scanner card" id="scanner">
+          <h2>Bill Scanner + Paytm Import</h2>
+          <div class="upload-row">
+            <input id="billInput" type="file" accept="image/*,.pdf" />
+            <button id="scanBtn" class="primary" type="button">Scan Bill</button>
+          </div>
+          <div class="upload-row">
+            <input id="paytmInput" type="file" accept=".csv,.json" />
+            <button id="importBtn" class="secondary" type="button">Import Paytm</button>
+          </div>
+          <p id="scanStatus" class="hint">No document processed yet.</p>
+        </section>
+
+        <section class="stack card">
+          <h2>100% Free/Open Models</h2>
+          <ul>
+            <li>Chat + Insights: Llama 3.1 / Mistral 7B (Ollama)</li>
+            <li>Invoices OCR: Tesseract OCR + PaddleOCR</li>
+            <li>Summaries: Local prompt chains (no Anthropic)</li>
+            <li>Embeddings: nomic-embed-text</li>
+          </ul>
+        </section>
+      </aside>
+
+      <main class="dashboard" id="dashboard">
+        <header class="topbar glass">
+          <div>
+            <p class="eyebrow">AI FINTECH CONTROL CENTER</p>
+            <h2>Hey John, your phone-first finance cockpit is live.</h2>
+          </div>
+          <button id="generateSummary" class="primary" type="button">Generate AI Summary</button>
+        </header>
+
+        <section class="metrics-grid">
+          <article class="metric card">
+            <p>Net Worth</p>
+            <h3 id="netWorth">₹0</h3>
+            <span class="up">Live updated</span>
+          </article>
+          <article class="metric card">
+            <p>Monthly Spend</p>
+            <h3 id="monthlySpend">₹0</h3>
+            <span class="down">Live updated</span>
+          </article>
+          <article class="metric card">
+            <p>AI Savings Opportunity</p>
+            <h3 id="savingsOpp">₹0</h3>
+            <span class="up">Auto calculated</span>
+          </article>
+          <article class="metric card">
+            <p>Transactions</p>
+            <h3 id="txnCount">0</h3>
+            <span class="up">This month</span>
+          </article>
+        </section>
+
+        <section class="chart-layout" id="charts">
+          <article class="card chart-card">
+            <div class="section-title-row">
+              <h3>AI Expense Tracker</h3>
+              <span class="pill">Live trend</span>
+            </div>
+            <canvas id="expenseChart" width="700" height="260"></canvas>
+          </article>
+          <article class="card chart-card">
+            <div class="section-title-row">
+              <h3>Category Split</h3>
+              <span class="pill">Auto-tagged</span>
+            </div>
+            <canvas id="categoryChart" width="350" height="260"></canvas>
+          </article>
+        </section>
+
+        <section class="insight-layout" id="insights">
+          <article class="card ai-summary">
+            <h3>AI Summary</h3>
+            <p id="summaryText">Loading summary...</p>
+            <ul id="insightList"></ul>
+          </article>
+
+          <article class="card chat-card" id="chat">
+            <h3>Finance AI Chat</h3>
+            <div id="chatLog" class="chat-log">
+              <div class="msg ai">Hi! Ask me about spending trends, GST, or invoice risks.</div>
+            </div>
+            <div class="chat-input-row">
+              <input id="chatInput" type="text" placeholder="Ask PulseFi AI..." />
+              <button id="sendChat" class="primary" type="button">Send</button>
+            </div>
+          </article>
+        </section>
+
+        <section class="card txn-card">
+          <h3>Add Expense</h3>
+          <div class="txn-form">
+            <input id="txnMerchant" type="text" placeholder="Merchant (e.g. Swiggy)" />
+            <input id="txnAmount" type="number" min="1" step="1" placeholder="Amount in ₹" />
+            <select id="txnCategory">
+              <option>Food</option>
+              <option>Essentials</option>
+              <option>Transport</option>
+              <option>Entertainment</option>
+              <option>Savings</option>
+              <option>Other</option>
+            </select>
+            <button id="addTxn" class="primary" type="button">Add</button>
+          </div>
+          <div id="txnStatus" class="hint">Try adding a few expenses to see live updates.</div>
+          <div id="txnList" class="txn-list"></div>
+        </section>
+
+        <section class="card gst-card" id="gst">
+          <h3>GST + Invoice Center</h3>
+          <div class="txn-form">
+            <input id="invoiceVendor" type="text" placeholder="Vendor name" />
+            <input id="invoiceBase" type="number" min="1" step="0.01" placeholder="Invoice amount (excl. GST)" />
+            <select id="gstRate">
+              <option value="5">GST 5%</option>
+              <option value="12">GST 12%</option>
+              <option value="18" selected>GST 18%</option>
+              <option value="28">GST 28%</option>
+            </select>
+            <button id="addInvoice" class="primary" type="button">Add Invoice</button>
+          </div>
+          <p id="gstSummary" class="hint">No invoice added yet.</p>
+          <div id="invoiceList" class="txn-list"></div>
+        </section>
+      </main>
+    </div>
+
+    <nav class="mobile-nav">
+      <a href="#dashboard">Home</a>
+      <a href="#charts">Charts</a>
+      <a href="#chat">Chat</a>
+      <a href="#gst">GST</a>
+    </nav>
+
+    <script src="app.js"></script>
+  </body>
+</html>
