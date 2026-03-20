@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PulseFi AI Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar glass">
+        <div class="brand">
+          <div class="logo">⚡</div>
+          <div>
+            <h1>PulseFi</h1>
+            <p>Open-Source AI Finance</p>
+          </div>
+        </div>
+
+        <section class="auth-card card">
+          <h2>Secure Onboarding</h2>
+          <div class="auth-actions">
+            <button class="primary">Sign Up</button>
+            <button class="secondary">Login</button>
+          </div>
+          <button class="google-btn">Continue with Google</button>
+          <label class="switch-row">
+            <span>Enable biometrics</span>
+            <input id="biometricToggle" type="checkbox" checked />
+          </label>
+          <p class="hint">Uses WebAuthn/FaceID fallback in production.</p>
+        </section>
+
+        <section class="scanner card">
+          <h2>Bill Scanner + Paytm Import</h2>
+          <div class="upload-row">
+            <input id="billInput" type="file" accept="image/*,.pdf" />
+            <button id="scanBtn" class="primary">Scan Bill</button>
+          </div>
+          <div class="upload-row">
+            <input id="paytmInput" type="file" accept=".csv,.xlsx,.json" />
+            <button id="importBtn" class="secondary">Import Paytm</button>
+          </div>
+          <p id="scanStatus" class="hint">No document processed yet.</p>
+        </section>
+
+        <section class="stack card">
+          <h2>Free/Open-Source AI Stack</h2>
+          <ul>
+            <li>Chat + Insights: Llama 3.1 / Mistral 7B (Ollama)</li>
+            <li>Receipt OCR: Tesseract OCR</li>
+            <li>Summaries: Local LLM prompt chains</li>
+            <li>Embeddings: nomic-embed-text</li>
+          </ul>
+        </section>
+      </aside>
+
+      <main class="dashboard">
+        <header class="topbar glass">
+          <div>
+            <p class="eyebrow">AI FINTECH CONTROL CENTER</p>
+            <h2>Hey John, your money just got smarter.</h2>
+          </div>
+          <button id="generateSummary" class="primary">Generate AI Summary</button>
+        </header>
+
+        <section class="metrics-grid">
+          <article class="metric card">
+            <p>Net Worth</p>
+            <h3 id="netWorth">₹12,48,900</h3>
+            <span class="up">+8.4% MoM</span>
+          </article>
+          <article class="metric card">
+            <p>Monthly Spend</p>
+            <h3 id="monthlySpend">₹62,480</h3>
+            <span class="down">+12% vs budget</span>
+          </article>
+          <article class="metric card">
+            <p>AI Savings Opportunity</p>
+            <h3>₹11,200</h3>
+            <span class="up">Subscriptions + dining</span>
+          </article>
+          <article class="metric card">
+            <p>Credit Utilization</p>
+            <h3>23%</h3>
+            <span class="up">Healthy range</span>
+          </article>
+        </section>
+
+        <section class="chart-layout">
+          <article class="card chart-card">
+            <h3>AI Expense Tracker</h3>
+            <canvas id="expenseChart" width="700" height="260"></canvas>
+          </article>
+          <article class="card chart-card">
+            <h3>Category Split</h3>
+            <canvas id="categoryChart" width="350" height="260"></canvas>
+          </article>
+        </section>
+
+        <section class="insight-layout">
+          <article class="card ai-summary">
+            <h3>AI Summary</h3>
+            <p id="summaryText">
+              Click <strong>Generate AI Summary</strong> to get a contextual weekly brief with risk flags,
+              savings ideas, and spend anomalies.
+            </p>
+            <ul id="insightList"></ul>
+          </article>
+
+          <article class="card chat-card">
+            <h3>Finance AI Chat</h3>
+            <div id="chatLog" class="chat-log">
+              <div class="msg ai">Hi! Ask me about spending trends, bill predictions, or budget plans.</div>
+            </div>
+            <div class="chat-input-row">
+              <input id="chatInput" type="text" placeholder="Ask PulseFi AI..." />
+              <button id="sendChat" class="primary">Send</button>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
