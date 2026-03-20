@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0-alpine
+    container_name: capsaf-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: capsaf
+      MONGO_INITDB_ROOT_PASSWORD: capsaf_secure_password
+      MONGO_INITDB_DATABASE: capsaf
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    networks:
+      - capsaf-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: capsaf-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --requirepass capsaf_redis_password
+    volumes:
+      - redis_data:/data
+    networks:
+      - capsaf-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  api:
+    build: .
+    container_name: capsaf-api
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      MONGODB_URI: mongodb://capsaf:capsaf_secure_password@mongodb:27017/capsaf?authSource=admin
+      MONGODB_LOCAL: mongodb://capsaf:capsaf_secure_password@mongodb:27017/capsaf?authSource=admin
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: capsaf_redis_password
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-this-in-production}
+      JWT_EXPIRE: 7d
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET:-your-refresh-token-secret-key}
+      REFRESH_TOKEN_EXPIRE: 30d
+      ALLOWED_ORIGINS: http://localhost:3000,http://frontend:3000
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+    networks:
+      - capsaf-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend (Optional - served by http-server)
+  frontend:
+    image: node:22-alpine
+    container_name: capsaf-frontend
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+    command: sh -c "npm install -g http-server && http-server -p 3000 -c-1"
+    networks:
+      - capsaf-network
+    depends_on:
+      - api
+
+networks:
+  capsaf-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  mongodb_config:
+  redis_data:
